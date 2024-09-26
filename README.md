@@ -1,4 +1,4 @@
-### 모듈 파일을 안올려서 모듈도 `npm init`으로 다운받고 `npm start`로 실행하면 됨
+### 모듈 파일을 안올려서 모듈도 `npm init`으로 다운받고 `npm i`로 node_modules폴더 생성 후 `npm start`로 실행하면 됨
 
 
 ## ※문제※
