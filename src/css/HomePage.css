@@ -1,0 +1,65 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'FUNFLOWSURVIVORKR'; /* 글로벌 CSS에서 폰트 적용 */
+    background-image: url('../../public/img/background.png'); /* 배경 이미지 적용 */
+    background-size: cover;
+    background-position: center;
+}
+
+.logo {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+img.logo {
+    width: 120%; /* 로고 이미지 크기 조정 */
+}
+
+.main {
+    width: 50vh;
+    height: 70vh;
+    border-radius: 2vh;
+    background-color: rgba(104, 104, 104, 0.80);
+    box-shadow: 0.1vh 0.1vh 0.3vh 0.1vh #37383a inset;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+button {
+    font-size: 4vh;
+    position: relative;
+    float: left;
+    width: 25vh;
+    height: 7vh;
+    padding: 0vh;
+    margin: 1vh 2vh 1vh 0;
+    font-weight: 70vh;
+    text-align: center;
+    line-height: 5vh;
+    color: #000000;
+    border-radius: 0.5vh;
+    transition: all 0.2vh ;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: #D9D9D9;
+}
+
+button img {
+    display:block;
+	width:30%;
+	height:auto;
+}
+
+button:hover {
+    margin-top: 3px;
+    box-shadow: 0 0 0 #525755;
+    transition: 0.2s;
+}
+
