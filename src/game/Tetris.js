@@ -20,19 +20,79 @@ const COLORS = {
   8: "#bcbcbc", // 회색 줄 블록
 };
 
+
 // 테트리미노 블록 모양 정의
 const tetrominos = [
-  [[1, 1, 1, 1]],  // I 블록
-  [[0, 2, 0, 0], [0, 2, 2, 2]],  // J 블록
-  [[0, 0, 0, 3], [0, 3, 3, 3]],  // L 블록
-  [[0, 4, 4,0], [0, 4, 4, 0]],  // O 블록
-  [[0, 0, 5, 5], [0, 5, 5, 0]],  // S 블록
-  [[0, 0, 6, 0], [0, 6, 6, 6]],  // T 블록
-  [[0, 7, 7, 0], [0, 0, 7, 7]],  // Z 블록
+  // I 블록
+  [
+    [0, 0, 0, 0],
+    [1, 1, 1, 1],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+  ],
+  // J 블록
+  [
+    [0, 0, 0, 0],
+    [0, 2, 0, 0],
+    [0, 2, 2, 2],
+    [0, 0, 0, 0],
+  ],
+  // L 블록
+  [
+    [0, 0, 0, 0],
+    [0, 0, 3, 0],
+    [3, 3, 3, 0],
+    [0, 0, 0, 0],
+  ],
+  // O 블록
+  [
+    [0, 0, 0, 0],
+    [0, 4, 4, 0],
+    [0, 4, 4, 0],
+    [0, 0, 0, 0],
+  ],
+  // S 블록
+  [
+    [0, 0, 0, 0],
+    [0, 0, 5, 5],
+    [0, 5, 5, 0],
+    [0, 0, 0, 0],
+  ],
+  // T 블록
+  [
+    [0, 0, 0, 0],
+    [0, 6, 0, 0],
+    [6, 6, 6, 0],
+    [0, 0, 0, 0],
+  ],
+  // Z 블록
+  [
+    [0, 0, 0, 0],
+    [7, 7, 0, 0],
+    [0, 7, 7, 0],
+    [0, 0, 0, 0],
+  ]
 ];
 
-// 랜덤 테트리미노 생성
-const getRandomTetromino = () => tetrominos[Math.floor(Math.random() * tetrominos.length)];
+// 블록의 빈 행을 제거하여 맨 위에 맞추는 함수
+const trimTetromino = (tetromino) => {
+  // 각 행에서 값이 0이 아닌 셀이 하나라도 있는지 확인하여 유효한 행만 남김
+  const nonEmptyRows = tetromino.filter(row => row.some(cell => cell !== 0));
+
+  // 빈 열이 있을 경우도 제거하려면 다음 코드 추가 (옵션)
+  const nonEmptyCols = nonEmptyRows[0].map((_, colIndex) => 
+    nonEmptyRows.some(row => row[colIndex] !== 0)
+  );
+
+  // 유효한 열만 남겨서 리턴
+  return nonEmptyRows.map(row => row.filter((_, colIndex) => nonEmptyCols[colIndex]));
+};
+
+// 블록을 사용할 때마다 가공한 상태로 적용
+const getRandomTetromino = () => {
+  const randomTetromino = tetrominos[Math.floor(Math.random() * tetrominos.length)];
+  return trimTetromino(randomTetromino); // 빈 행을 제거한 블록을 반환
+};
 
 // 빈 보드 생성 함수
 const createEmptyBoard = () => Array.from({ length: BOARD_HEIGHT }, () => Array(BOARD_WIDTH).fill(0));
@@ -330,6 +390,17 @@ const calculateComboScore = (linesCleared) => {
     });
   };
 
+  // 중앙에 맞추기 위한 좌표 계산 함수
+const getCenteredPosition = (block, canvasSize, cellSize) => {
+  const blockWidth = block[0].length * cellSize;
+  const blockHeight = block.length * cellSize;
+
+  const xOffset = Math.floor((canvasSize.width - blockWidth) / 2 / cellSize); // X축 중앙 좌표
+  const yOffset = Math.floor((canvasSize.height - blockHeight) / 2 / cellSize); // Y축 중앙 좌표
+
+  return { xOffset, yOffset };
+  };
+  
   // 저장된 블럭 그리기
   useEffect(() => {
     const canvas = heldCanvasRef.current;
@@ -341,26 +412,35 @@ const calculateComboScore = (linesCleared) => {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     drawGrid(ctx, 4, 4); // 4x4 그리드 그리기
+  
     if (heldBlock) {
-      drawCanvasBlock(ctx, heldBlock, 0, 1); // 중앙에 그리기
+      const processedBlock = trimTetromino(heldBlock); // 블럭을 위쪽과 왼쪽에 맞춰 가공
+      const { xOffset, yOffset } = getCenteredPosition(processedBlock, { width: canvas.width, height: canvas.height }, CELL_SIZE); // 중앙 좌표 계산
+      
+      drawCanvasBlock(ctx, processedBlock, xOffset, yOffset); // 계산된 중앙 좌표에 블럭 그리기
     }
   }, [heldBlock]);
 
   // 다음 블럭들 그리기
-  useEffect(() => {
-    const canvas = nextCanvasRef.current;
-    const ctx = canvas.getContext("2d");
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // 캔버스 배경 색상을 #7f7f7f로 설정
-    ctx.fillStyle = "#7f7f7f";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    drawGrid(ctx, 4, 12); // 4x12 그리드 그리기 (넥스트는 세로로 길게)
-    nextBlocks.forEach((block, index) => {
-      drawCanvasBlock(ctx, block, 0, (index * 4) + 1); // 각 블럭을 4칸씩 띄워서 그리기
-    });
-  }, [nextBlocks]);
+useEffect(() => {
+  const canvas = nextCanvasRef.current;
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // 캔버스 배경 색상을 #7f7f7f로 설정
+  ctx.fillStyle = "#7f7f7f";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  drawGrid(ctx, 4, 12); // 4x12 그리드 그리기 (넥스트는 세로로 길게)
+
+  nextBlocks.forEach((block, index) => {
+    const processedBlock = trimTetromino(block); // 블럭을 가공하여 빈 공간 제거
+    const { xOffset, yOffset } = getCenteredPosition(processedBlock, { width: 4 * CELL_SIZE, height: 4 * CELL_SIZE }, CELL_SIZE); // 각 블럭을 중앙에 맞추기 위한 좌표 계산
+
+    // 각 블럭을 4칸씩 띄워서 그리기, 계산된 좌표로 블럭을 그려 중앙에 배치
+    drawCanvasBlock(ctx, processedBlock, xOffset, (index * 4) + yOffset);
+  });
+}, [nextBlocks]);
 
 
   const drawBoard = () => {
