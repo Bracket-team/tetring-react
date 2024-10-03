@@ -1,0 +1,89 @@
+.home {
+    display: flex;
+    flex-direction: column; /* 수직 정렬을 위해 변경 */
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'FUNFLOWSURVIVORKR';
+    background-image: url('../../public/img/background.png'); /* 이미지 경로 확인 */
+    background-size: 100% 100%;
+    background-position: center;
+    position: relative; /* 요소가 절대 위치될 수 있도록 설정 */
+}
+
+/* 헤더 스타일 - 로그인 버튼을 오른쪽 상단에 배치 */
+.header {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
+  /* 로그인 버튼 스타일 */
+.btnLogin {
+    background-color: #ff6347; /* 원하는 색상으로 설정 */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btnLogin:hover {
+    background-color: #e5533d; /* 호버 시 색상 변경 */
+}
+
+.logo {
+    width: 100%; /* 부모 요소의 너비에 맞춰 중앙 정렬 */
+    text-align: center; /* 로고를 중앙에 정렬 */
+    margin-bottom: 20px;
+}
+
+img.logo {
+    width: 40%; /* 적절한 크기로 수정 */
+    height: auto; /* 비율 유지 */
+}
+
+.main {
+    width: 50vh;
+    height: 70vh;
+    border-radius: 2vh;
+    background-color: rgba(104, 104, 104, 0.80);
+    box-shadow: 0.1vh 0.1vh 0.3vh 0.1vh #37383a inset;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+button {
+    font-size: 4vh;
+    position: relative;
+    float: left;
+    width: 25vh;
+    height: 7vh;
+    padding: 0vh;
+    margin: 1vh 2vh 1vh 0;
+    font-weight: 70vh;
+    text-align: center;
+    line-height: 5vh;
+    color: #000000;
+    border-radius: 0.5vh;
+    transition: all 0.2vh ;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: #D9D9D9;
+}
+
+button img {
+    display:block;
+	width:30%;
+	height:auto;
+}
+
+button:hover {
+    margin-top: 3px;
+    box-shadow: 0 0 5px #525755;
+    transition: 0.2s;
+}
